@@ -5,9 +5,10 @@ import registerServiceWorker from './registerServiceWorker';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { Provider } from 'react-redux';
+import Profile from './Containers/Profile/index';
 import store from './Redux/store';
 import App from './Components/App/App';
-//biiiiii
+
 const Rideshare = () => {
   return (
     <BrowserRouter>
@@ -15,14 +16,13 @@ const Rideshare = () => {
         <Provider store={store}>
           <Switch>
             <Route exact path="/" component={App} />
+            <Route path="/profile" component={Profile} />
           </Switch>
         </Provider>
       </MuiThemeProvider>
     </BrowserRouter>
   );
 };
-//done
 
 ReactDOM.render(<Rideshare />, document.getElementById('root'));
 registerServiceWorker();
-//phil
