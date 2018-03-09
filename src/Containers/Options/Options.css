@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700');
+
+.Options-Container {
+  height: 100vh;
+  width: 100vw;
+  background-image: url('../../assets/background-options.jpg');
+  background-position: right bottom, left top;
+  background-repeat: no-repeat, repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.Options-Box {
+  height: 50vh;
+  width: 50vh;
+  background-color: black;
+  opacity: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.Options-Box h3 {
+  color: white;
+  font-family: 'Open Sans Condensed', sans-serif;
+  font-size: 30px;
+  text-transform: capitalize;
+  margin-bottom: 2.5%;
+}
+
+.Options-Box button {
+  background-color: #36648b;
+  border: none;
+  height: 35px;
+  width: 70%;
+  margin: 5%;
+  font-size: 15px;
+  color: white;
+  font-family: 'Open Sans Condensed', sans-serif;
+}
