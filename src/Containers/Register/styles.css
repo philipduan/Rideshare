@@ -1,0 +1,64 @@
+.page.login {
+  background: linear-gradient(-50deg, transparent, #3f9e4da1),
+    url('https://images.unsplash.com/photo-1440330033336-7dcff4630cef?ixlib=rb-0.3.5&s=9e6f1f5515d04218a33968d142784ad0&auto=format&fit=crop&w=971&q=80');
+  background-blend-mode: multiply;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.cardContainer {
+  display: flex;
+  margin: auto;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* width: 50vw;
+    height: 50vh; */
+}
+
+.login {
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+}
+
+.login .cardContainer {
+  height: 100vh;
+  width: 420px;
+  max-width: 95%;
+  min-width: 320px;
+}
+
+.login .formContainer {
+  padding: 1rem 4rem 3.25rem 4rem;
+}
+
+.login .logo {
+  margin-bottom: 1rem;
+  margin-top: -97px;
+  position: relative;
+  z-index: 1000;
+}
+
+.login .enterButton {
+  margin: 2.25rem 0 0 0;
+}
+
+.login .loginFormError {
+  position: absolute;
+  bottom: 1rem;
+  text-align: center;
+  padding: 1rem 0;
+  color: red;
+  width: 290px;
+  font-size: 12px;
+}
+
+.login .unknownEmailMessage {
+  padding: 0 1rem;
+  line-height: 1.42rem;
+  max-width: 480px;
+}
+
+.login .join-dialog {
+  padding: 1rem;
+}
