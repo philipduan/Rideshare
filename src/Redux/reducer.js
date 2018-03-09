@@ -1,6 +1,9 @@
 import { combineReducers } from 'redux';
-// import someReducer from '';
+import ReduxThunk from 'redux-thunk';
+import { reducer as formReducer } from 'redux-form';
 
-export default combineReducers({
-  // someReducer: someReducer
+const rootReducer = combineReducers({
+  form: formReducer //Is something that we need for our redux-form to work
 });
+
+export default rootReducer;
