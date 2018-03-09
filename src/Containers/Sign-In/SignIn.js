@@ -42,7 +42,7 @@ class Login extends Component {
         console.log('you have signed bak in');
       })
       .then(() => {
-        this.props.history.push('/choose');
+        this.props.history.push('/options');
       })
       .catch(err => {
         console.log('there is an err', err);
@@ -85,7 +85,7 @@ class Login extends Component {
                   fullWidth
                   primary
                   className="enterButton"
-                  onClick={() => this.props.history.push(`/create`)}
+                  onClick={() => this.props.history.push(`/register`)}
                 >
                   Create Account
                 </RaisedButton>
