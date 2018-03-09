@@ -10,6 +10,8 @@ import store from './Redux/store';
 import App from './Components/App/App';
 import Options from './Containers/Options/Options';
 import SignIn from './Containers/Sign-In/SignIn';
+import PassengerInstance from './Containers/PassengerInstance/PassengerInstance';
+import DriverInstance from './Containers/DriverInstance/DriverInstance';
 
 //biiiiii
 const Rideshare = () => {
@@ -22,6 +24,8 @@ const Rideshare = () => {
             <Route path="/profile" component={Profile} />
             <Route path="/options" component={Options} />
             <Route exact path="/signin" component={SignIn} />
+            <Route path="/passengerinstance" component={PassengerInstance} />
+            <Route path="/driverinstance" component={DriverInstance} />
           </Switch>
         </Provider>
       </MuiThemeProvider>

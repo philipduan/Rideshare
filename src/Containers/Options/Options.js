@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './Options.css';
+import { withRouter } from 'react-router';
 
 class Options extends Component {
   constructor() {
@@ -10,11 +11,11 @@ class Options extends Component {
   }
 
   continueAsPassenger() {
-    //pass in method to do so here
+    this.props.history.push('/passengerinstance');
   }
 
   continueAsDriver() {
-    //pass in method to do so here
+    this.props.history.push('/driverinstance');
   }
 
   render() {
@@ -39,4 +40,5 @@ class Options extends Component {
   }
 }
 
+Options = withRouter(Options);
 export default Options;
