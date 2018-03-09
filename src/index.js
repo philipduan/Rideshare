@@ -8,7 +8,10 @@ import { Provider } from 'react-redux';
 import Profile from './Containers/Profile/index';
 import store from './Redux/store';
 import App from './Components/App/App';
+import Options from './Containers/Options/Options';
+import SignIn from './Containers/Sign-In/SignIn';
 
+//biiiiii
 const Rideshare = () => {
   return (
     <BrowserRouter>
@@ -17,6 +20,8 @@ const Rideshare = () => {
           <Switch>
             <Route exact path="/" component={App} />
             <Route path="/profile" component={Profile} />
+            <Route path="/options" component={Options} />
+            <Route exact path="/signin" component={SignIn} />
           </Switch>
         </Provider>
       </MuiThemeProvider>
