@@ -7,6 +7,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { Provider } from 'react-redux';
 import store from './Redux/store';
 import App from './Components/App/App';
+import Options from './Containers/Options/Options';
 //biiiiii
 const Rideshare = () => {
   return (
@@ -15,6 +16,7 @@ const Rideshare = () => {
         <Provider store={store}>
           <Switch>
             <Route exact path="/" component={App} />
+            <Route path="/options" component={Options} />
           </Switch>
         </Provider>
       </MuiThemeProvider>
