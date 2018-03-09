@@ -19,6 +19,13 @@ class Create extends Component {
       advance: true
     };
   }
+  // componentDidUpdate() {
+  //   this.check();
+  // }
+  validateEmail = email => {
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email));
+  };
 
   componentWillMount() {
     // firebase
@@ -58,11 +65,12 @@ class Create extends Component {
       this.state.name &&
       this.state.password &&
       this.state.userAddress &&
-      this.state.email
+      this.state.email &&
+      this.validateEmail(this.state.email) === true
     ) {
       this.setState({ advance: false });
     } else {
-      null;
+      this.setState({ advance: true });
     }
   };
 
@@ -77,17 +85,18 @@ class Create extends Component {
     firebase
       .auth()
       .createUserWithEmailAndPassword(this.state.email, this.state.password)
-      // .then(data => {
-      //   fetch('https://boomtown-server.herokuapp.com/users/', {
-      //     method: 'POST',
+      .then(data => {
+        fetch('https://rideshareserve.herokuapp.com/user/', {
+          method: 'POST',
 
-      //     body: JSON.stringify(user),
-      //     headers: new Headers({
-      //       'Content-Type': 'application/json'
-      //     })
-      //   });
-      // })
-      .then(() => {
+          body: JSON.stringify(user),
+          headers: new Headers({
+            'Content-Type': 'application/json'
+          })
+        });
+      })
+      .then(data => {
+        console.log(data);
         this.props.history.push('/items');
       })
       .catch(err => {

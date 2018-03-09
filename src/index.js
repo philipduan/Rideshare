@@ -11,13 +11,14 @@ import App from './Components/App/App';
 import Options from './Containers/Options/Options';
 import SignIn from './Containers/Sign-In/SignIn';
 import Register from './Containers/Register/Register';
-
+import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 //biiiiii
 const Rideshare = () => {
   return (
     <BrowserRouter>
-      <MuiThemeProvider>
+      <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
         <Provider store={store}>
           <Switch>
             <Route exact path="/" component={App} />

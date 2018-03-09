@@ -59,8 +59,8 @@ class Login extends Component {
   render() {
     return (
       <div className="page login">
-        <div className="logo" />
         <div className="cardContainer">
+          <div className="logo" />
           <Paper zDepth={5}>
             <div className="formContainer">
               <form onSubmit={this.login} autoComplete="off">
