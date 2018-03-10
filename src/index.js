@@ -15,6 +15,7 @@ import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import PassengerInstance from './Containers/PassengerInstance/PassengerInstance';
 import DriverInstance from './Containers/DriverInstance/DriverInstance';
+import RideFeed from './Containers/RideFeed/RideFeed';
 
 //biiiiii
 const Rideshare = () => {
@@ -30,6 +31,7 @@ const Rideshare = () => {
             <Route exact path="/register" component={Register} />
             <Route path="/passengerinstance" component={PassengerInstance} />
             <Route path="/driverinstance" component={DriverInstance} />
+            <Route path="/ridefeed" component={RideFeed} />
           </Switch>
         </Provider>
       </MuiThemeProvider>
