@@ -10,11 +10,10 @@ import store from './Redux/store';
 import App from './Components/App/App';
 import Options from './Containers/Options/Options';
 import SignIn from './Containers/Sign-In/SignIn';
+import Instance from './Containers/Instance/Instance';
 import Register from './Containers/Register/Register';
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import PassengerInstance from './Containers/PassengerInstance/PassengerInstance';
-import DriverInstance from './Containers/DriverInstance/DriverInstance';
 import RideFeed from './Containers/RideFeed/RideFeed';
 
 //biiiiii
@@ -28,9 +27,8 @@ const Rideshare = () => {
             <Route path="/profile" component={Profile} />
             <Route path="/options" component={Options} />
             <Route exact path="/signin" component={SignIn} />
+            <Route path="/instance/:type" component={Instance} />
             <Route exact path="/register" component={Register} />
-            <Route path="/passengerinstance" component={PassengerInstance} />
-            <Route path="/driverinstance" component={DriverInstance} />
             <Route path="/ridefeed" component={RideFeed} />
           </Switch>
         </Provider>
