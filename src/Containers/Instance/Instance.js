@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import TextField from 'material-ui/TextField';
 import DatePicker from 'material-ui/DatePicker';
+import { connect } from 'react-redux';
 import TimePicker from 'material-ui/TimePicker';
 import { Field, reduxForm } from 'redux-form';
 import moment from 'moment';
 import { withRouter } from 'react-router-dom';
 import _ from 'lodash';
 import axios from 'axios';
+import * as actions from '../../Redux/modules/instace.js';
 
 const styles = {
   general: {
@@ -38,7 +40,10 @@ class Instance extends Component {
   componentDidMount() {
     setTimeout(() => {
       const input = document.getElementById('autocomplete');
-      const input2 = document.getElementById('autocomplete2');
+      let input2 = null;
+      this.props.match.params.type === 'driver'
+        ? (input2 = document.getElementById('autocomplete2'))
+        : null;
       const options = { componentRestrictions: { country: 'ca' } };
       if (
         typeof window.google !== 'undefined' &&
@@ -48,10 +53,13 @@ class Instance extends Component {
           input,
           options
         );
-        const autocomplete2 = new window.google.maps.places.Autocomplete(
-          input2,
-          options
-        );
+        let autocomplete2 = null;
+        this.props.match.params.type === 'driver'
+          ? (autocomplete2 = new window.google.maps.places.Autocomplete(
+              input2,
+              options
+            ))
+          : null;
 
         autocomplete.addListener('place_changed', () => {
           const selectedPlace = autocomplete.getPlace();
@@ -93,42 +101,44 @@ class Instance extends Component {
           });
         });
 
-        autocomplete2.addListener('place_changed', () => {
-          const selectedPlace = autocomplete2.getPlace();
-          const componentForm = {
-            street_number: 'short_name',
-            route: 'long_name',
-            locality: 'long_name',
-            administrative_area_level_1: 'short_name',
-            country: 'long_name',
-            postal_code: 'short_name'
-          };
+        if (this.props.match.params.type === 'driver') {
+          autocomplete2.addListener('place_changed', () => {
+            const selectedPlace = autocomplete2.getPlace();
+            const componentForm = {
+              street_number: 'short_name',
+              route: 'long_name',
+              locality: 'long_name',
+              administrative_area_level_1: 'short_name',
+              country: 'long_name',
+              postal_code: 'short_name'
+            };
 
-          // Get each component of the address from the place details
-          // and fill the corresponding field on the form.
-          let selectedSuggest = {};
-          for (let addressComponent of selectedPlace.address_components) {
-            let addressType = '';
-            for (let type of addressComponent.types) {
-              if (componentForm[type]) {
-                addressType = type;
+            // Get each component of the address from the place details
+            // and fill the corresponding field on the form.
+            let selectedSuggest = {};
+            for (let addressComponent of selectedPlace.address_components) {
+              let addressType = '';
+              for (let type of addressComponent.types) {
+                if (componentForm[type]) {
+                  addressType = type;
+                }
+              }
+              if (componentForm[addressType]) {
+                selectedSuggest[addressType] =
+                  addressComponent[componentForm[addressType]];
               }
             }
-            if (componentForm[addressType]) {
-              selectedSuggest[addressType] =
-                addressComponent[componentForm[addressType]];
-            }
-          }
-          input2.value = `${selectedSuggest.street_number} ${
-            selectedSuggest.route
-          }, ${selectedSuggest.locality}, ${
-            selectedSuggest.administrative_area_level_1
-          }, ${selectedSuggest.postal_code}`;
+            input2.value = `${selectedSuggest.street_number} ${
+              selectedSuggest.route
+            }, ${selectedSuggest.locality}, ${
+              selectedSuggest.administrative_area_level_1
+            }, ${selectedSuggest.postal_code}`;
 
-          this.setState({
-            startingAddress: input2.value
+            this.setState({
+              startingAddress: input2.value
+            });
           });
-        });
+        }
       } else {
         console.error('Google API object is not defined');
       }
@@ -138,9 +148,6 @@ class Instance extends Component {
   renderInput = field => (
     <TextField
       id={field.id}
-      multiLine={field.input.name === 'description' ? true : false}
-      rows={field.input.name === 'description' ? 5 : 1}
-      rowsMax={field.input.name === 'description' ? 5 : 1}
       placeholder=""
       autoComplete="off"
       className={field.className}
@@ -205,6 +212,7 @@ class Instance extends Component {
             date: values.date,
             capacity: values.capacity,
             destinationAddress: this.state.destinationAddress,
+            startingAddress: this.state.startingAddress,
             carInfo: {
               make: values.make.toUpperCase(),
               model: values.model.toUpperCase(),
@@ -222,13 +230,10 @@ class Instance extends Component {
       console.log(data);
       this.props.match.params.type === 'driver'
         ? axios
-            .post('https://rideshareserve.herokuapp.com/driver', data)
+            .post('https://rideshareserv.herokuapp.com/driver', data)
             .then(response => console.log(response))
             .catch(err => console.log(err))
-        : axios
-            .post('https://rideshareserve.herokuapp.com/driver/filter', data)
-            .then(response => console.log(response))
-            .catch(err => console.log(err));
+        : this.props.sendInstanceObject(data);
     } else {
       this.setState({
         error: 'Please enter a correct address'
@@ -238,48 +243,47 @@ class Instance extends Component {
 
   render() {
     const { handleSubmit } = this.props;
-    const passengerInstance = [
+    const instanceField = [
       {
         id: '',
         className: 'Field DatePicker',
         label: 'Select Date',
         name: 'date',
-        component: this.renderDatePicker
+        component: this.renderDatePicker,
+        passenger: true
       },
       {
         id: '',
         className: 'Field TimePicker',
         label: 'Select Time',
         name: 'time',
-        component: this.renderTimePicker
+        component: this.renderTimePicker,
+        passenger: true
+      },
+      {
+        id: 'autocomplete2',
+        className: 'Field',
+        label: 'Starting Address',
+        name: 'startingAddress',
+        component: this.renderInput,
+        passenger: false
       },
       {
         id: 'autocomplete',
         className: 'Field',
         label: 'Destination',
         name: 'destinationAddress',
-        component: this.renderInput
-      }
-    ];
-
-    const maxDistance = [
+        component: this.renderInput,
+        passenger: true
+      },
       {
         id: '',
         className: 'Field',
         label: 'Max Distance',
         name: 'maxDistance',
         type: 'number',
-        component: this.renderInput
-      }
-    ];
-
-    const driverInstance = [
-      {
-        id: 'autocomplete2',
-        className: 'Field',
-        label: 'Starting Address',
-        name: 'startingAddress',
-        component: this.renderInput
+        component: this.renderInput,
+        passenger: true
       },
       {
         id: '',
@@ -287,14 +291,16 @@ class Instance extends Component {
         label: 'Capacity',
         name: 'capacity',
         type: 'number',
-        component: this.renderInput
+        component: this.renderInput,
+        passenger: false
       },
       {
         className: 'Field',
         label: 'Car Brand',
         name: 'make',
         type: 'text',
-        component: this.renderInput
+        component: this.renderInput,
+        passenger: false
       },
       {
         id: '',
@@ -302,7 +308,8 @@ class Instance extends Component {
         label: 'Car Model',
         name: 'model',
         type: 'text',
-        component: this.renderInput
+        component: this.renderInput,
+        passenger: false
       },
       {
         id: '',
@@ -310,7 +317,8 @@ class Instance extends Component {
         label: 'Car Fuel Consumption',
         name: 'fuelEconomy',
         type: 'number',
-        component: this.renderInput
+        component: this.renderInput,
+        passenger: false
       },
       {
         id: '',
@@ -318,7 +326,8 @@ class Instance extends Component {
         label: 'Car License Plate',
         name: 'licensePlate',
         type: 'text',
-        component: this.renderInput
+        component: this.renderInput,
+        passenger: false
       }
     ];
     return (
@@ -334,19 +343,21 @@ class Instance extends Component {
             className="Driver-Instance-Form"
             onSubmit={handleSubmit(this.onSubmit.bind(this))}
           >
-            {passengerInstance.map((item, i) => (
-              <Field
-                key={i}
-                id={item.id}
-                className={item.className}
-                label={item.label}
-                name={item.name}
-                type={item.type}
-                component={item.component}
-              />
-            ))}
-            {this.props.match.params.type === 'driver'
-              ? driverInstance.map((item, i) => (
+            {instanceField.map(
+              (item, i) =>
+                this.props.match.params.type === 'passenger' ? (
+                  item.passenger ? (
+                    <Field
+                      key={i}
+                      id={item.id}
+                      className={item.className}
+                      label={item.label}
+                      name={item.name}
+                      type={item.type}
+                      component={item.component}
+                    />
+                  ) : null
+                ) : item.name !== 'maxDistance' ? (
                   <Field
                     key={i}
                     id={item.id}
@@ -356,18 +367,8 @@ class Instance extends Component {
                     type={item.type}
                     component={item.component}
                   />
-                ))
-              : maxDistance.map((item, i) => (
-                  <Field
-                    key={i}
-                    id={item.id}
-                    className={item.className}
-                    label={item.label}
-                    name={item.name}
-                    type={item.type}
-                    component={item.component}
-                  />
-                ))}
+                ) : null
+            )}
             <p> {this.state.error} </p>
             <button type="submit" className="Create-Instance-Submit">
               Create
@@ -420,4 +421,4 @@ function validate(values) {
 export default reduxForm({
   validate: validate,
   form: 'instance'
-})(withRouter(Instance));
+})(connect(null, actions)(withRouter(Instance)));

@@ -20,7 +20,7 @@ import RideFeed from './Containers/RideFeed/RideFeed';
 const Rideshare = () => {
   return (
     <BrowserRouter>
-      <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
+      <MuiThemeProvider>
         <Provider store={store}>
           <Switch>
             <Route exact path="/" component={App} />
