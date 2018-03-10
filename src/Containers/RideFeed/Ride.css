@@ -6,13 +6,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 1% 0%;
+  margin: 2% 0%;
 }
 
 .Ride-Information {
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-align: left;
   width: 100%;
 }
 
@@ -30,6 +31,8 @@
   color: #36648b;
   font-style: italic;
   padding: 1%;
+  text-align: left;
+  align-self: flex-start;
 }
 
 .Ride-Destination span {
@@ -39,9 +42,9 @@
 
 .Ride-Costs {
   font-family: 'Open Sans Condensed', sans-serif;
-  font-size: 25px;
+  font-size: 20px;
   color: grey;
-  margin-top: 2%;
+  margin-top: 5%;
 }
 
 .RSVP-button {
@@ -50,5 +53,5 @@
   font-size: 18px;
   color: white;
   padding: 10px 20px;
-  margin-top: 2%;
+  margin-top: 5%;
 }

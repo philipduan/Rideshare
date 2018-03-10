@@ -1,10 +1,15 @@
 .page.login {
-  background: linear-gradient(-50deg, transparent, #3f9e4da1),
+  background-color: black;
+  /* background: linear-gradient(-50deg, transparent, #3f9e4da1),
     url('https://images.unsplash.com/photo-1440330033336-7dcff4630cef?ixlib=rb-0.3.5&s=9e6f1f5515d04218a33968d142784ad0&auto=format&fit=crop&w=971&q=80');
   background-blend-mode: multiply;
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: cover; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
+
 .cardContainer {
   display: flex;
   margin: auto;
@@ -34,9 +39,6 @@
 
 .login .logo {
   margin-bottom: 1rem;
-  margin-top: -97px;
-  position: relative;
-  z-index: 1000;
 }
 
 .login .enterButton {

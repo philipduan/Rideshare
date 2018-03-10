@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { ProfileCard } from './ProfileCard';
-import { ProfileDriver } from './ProfileDriver';
-import { ProfilePassenger } from './ProfilePassenger';
+// import { ProfileDriver } from './ProfileDriver';
+// import { ProfilePassenger } from './ProfilePassenger';
 import axios from 'axios';
 
 import './style.css';
@@ -10,27 +10,43 @@ export default class ProfileContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: []
+      user: null,
+      isLoading: true
     };
   }
 
   componentWillMount() {
-    // axios.get('https://rideshareserve.herokuapp.com/user/').then(data => {
-    //   if (data) {
-    //     console.log('data: ', data);
-    //     let user = data.find(user => user._id === this.props.match.params.id);
-    //     return this.setState({ user });
-    //   }
-    //   console.log('no data');
-    // });
+    let user = sessionStorage.getItem('userId');
+    // this.setState({ user });
+    axios
+      .get(`https://rideshareserve.herokuapp.com/user/${user}`)
+      .then(res => {
+        console.log(res.data[0], 'response');
+        this.setState({ user: res.data[0] });
+        console.log('state', this.state.user);
+      })
+      .then(() => {
+        this.setState({ isLoading: false });
+      })
+      .catch(err => {
+        console.log('this is error', err);
+      });
   }
 
   render() {
+    console.log('render', this.state.user);
     return (
-      <div className="Profile-Container">
-        <ProfileCard data={this.state.user} text="card" />
-        <ProfileDriver data={this.state.user} text="driver" />
-        <ProfilePassenger data={this.state.user} text="passenger" />
+      <div>
+        {//this.state.isLoading === false ? (
+        this.state.user ? (
+          <div className="Profile-Container">
+            <ProfileCard data={this.state.user} />
+            {/* <ProfileDriver data={this.state.user} />
+            <ProfilePassenger data={this.state.user} /> */}
+          </div>
+        ) : (
+          'null'
+        )}
       </div>
     );
   }

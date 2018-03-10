@@ -1,9 +1,9 @@
 .Ride-Feed-Container {
   display: flex;
-  height: 100vh;
+  height: auto;
   flex-direction: column;
   align-items: center;
-  background-color: #000000;
+  background-color: black;
 }
 
 .Ride-Feed-Container h1 {
@@ -12,4 +12,17 @@
   font-family: 'Open Sans Condensed', sans-serif;
   font-size: 30px;
   text-transform: capitalize;
+}
+
+.Passenger-Profile-Button {
+  background-color: #36648b;
+  font-family: 'Open Sans Condensed', sans-serif;
+  font-size: 18px;
+  width: 100%;
+  color: white;
+  padding: 10px 20px;
+  margin-top: 5%;
+  position: fixed;
+  bottom: 0;
+  height: 8%;
 }
