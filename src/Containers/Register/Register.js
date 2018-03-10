@@ -147,14 +147,18 @@ class Create extends Component {
                   />
                 </div>
                 <RaisedButton
+                  labelColor="#FFFFFF"
+                  label="Register"
+                  labelStyle={{
+                    fontFamily: 'Open Sans Condensed sans-serif',
+                    textTransform: 'capitalize'
+                  }}
                   disabled={this.state.advance}
                   className="enterButton"
                   primary
                   type="submit"
                   fullWidth
-                >
-                  Create
-                </RaisedButton>
+                />
               </form>
             </div>
           </Paper>
