@@ -9,17 +9,16 @@ import { withRouter } from 'react-router-dom';
 import _ from 'lodash';
 import axios from 'axios';
 import * as actions from '../../Redux/modules/instace.js';
-
+import './style.css';
 const styles = {
   general: {
     backgroundColor: 'white',
-    borderRadius: '5px',
     margin: '10px 0',
     padding: '0 10px'
   },
   hintStyle: {
     color: '#546E7A',
-    fontFamily: 'Montserrat, sans-serif',
+    fontFamily: 'Open Sans Condensed, sans-serif',
     fontStyle: 'italic',
     fontWeight: '550'
   }
@@ -33,7 +32,8 @@ class Instance extends Component {
       destinationAddress: '',
       startingAddress: '',
       error: '',
-      geoCode: {}
+      geoCode: {},
+      disable: false
     };
   }
 
@@ -232,7 +232,10 @@ class Instance extends Component {
       if (this.props.match.params.type === 'driver') {
         axios
           .post('https://rideshareserv.herokuapp.com/driver', data)
-          .then(response => console.log(response))
+          .then(response => {
+            this.setState({ err: 'Instance Created', disabled: true });
+            console.log(response);
+          })
           .catch(err => console.log(err));
       } else {
         sessionStorage.setItem('address', data.destinationAddress);
@@ -340,11 +343,11 @@ class Instance extends Component {
           <h1>
             {' '}
             {this.props.match.params.type === 'driver'
-              ? 'Driver Instance'
-              : 'Passenger Instance'}
+              ? 'Create Driver Instance'
+              : 'Create Passenger Instance'}
           </h1>
           <form
-            className="Driver-Instance-Form"
+            className="Create-Instance-Form"
             onSubmit={handleSubmit(this.onSubmit.bind(this))}
           >
             {instanceField.map(
@@ -374,7 +377,11 @@ class Instance extends Component {
                 ) : null
             )}
             <p> {this.state.error} </p>
-            <button type="submit" className="Create-Instance-Submit">
+            <button
+              disabled={this.state.disabled}
+              type="submit"
+              className="Create-Instance-Submit"
+            >
               Create
             </button>
           </form>

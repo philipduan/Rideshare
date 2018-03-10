@@ -9,7 +9,6 @@ export default getMuiTheme({
     primary1Color: '#36648b',
     primary2Color: '#36648b',
     primary2Color: '#36648b'
-
     // accent1Color: '#4bd17f'
   },
   flatButton: {
