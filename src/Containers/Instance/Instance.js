@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import TextField from 'material-ui/TextField';
 import DatePicker from 'material-ui/DatePicker';
+import { connect } from 'react-redux';
 import TimePicker from 'material-ui/TimePicker';
 import { Field, reduxForm } from 'redux-form';
 import moment from 'moment';
 import { withRouter } from 'react-router-dom';
 import _ from 'lodash';
 import axios from 'axios';
+import * as actions from '../../Redux/modules/instace.js';
 
 const styles = {
   general: {
@@ -231,10 +233,7 @@ class Instance extends Component {
             .post('https://rideshareserv.herokuapp.com/driver', data)
             .then(response => console.log(response))
             .catch(err => console.log(err))
-        : axios
-            .post('https://rideshareserv.herokuapp.com/driver/filter', data)
-            .then(response => console.log(response))
-            .catch(err => console.log(err));
+        : this.props.sendInstanceObject(data);
     } else {
       this.setState({
         error: 'Please enter a correct address'
@@ -422,4 +421,4 @@ function validate(values) {
 export default reduxForm({
   validate: validate,
   form: 'instance'
-})(withRouter(Instance));
+})(connect(null, actions)(withRouter(Instance)));
