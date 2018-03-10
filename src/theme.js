@@ -16,6 +16,5 @@ export default getMuiTheme({
   },
   raisedButton: {
     color: '#FFFFFF'
-  },
-  textField: {}
+  }
 });
