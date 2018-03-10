@@ -184,6 +184,7 @@ class Instance extends Component {
   renderTimePicker = field => {
     return (
       <TimePicker
+        primary
         id={field.id}
         className={field.className}
         hintText={field.label}
