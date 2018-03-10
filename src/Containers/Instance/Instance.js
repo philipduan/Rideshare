@@ -6,6 +6,7 @@ import { Field, reduxForm } from 'redux-form';
 import moment from 'moment';
 import { withRouter } from 'react-router-dom';
 import _ from 'lodash';
+import axios from 'axios';
 
 const styles = {
   general: {
@@ -27,19 +28,17 @@ class Instance extends Component {
     super(props);
 
     this.state = {
-      destination: '', //1 line full address i.e 462, Wellington St W, Toronto, ON, M5V 1E3
+      destinationAddress: '',
+      startingAddress: '',
       error: '',
       geoCode: {}
-      //geocode : {
-      // lat: -43.04938492,
-      // lng: 73.3492837
-      //}
     };
   }
 
   componentDidMount() {
     setTimeout(() => {
       const input = document.getElementById('autocomplete');
+      const input2 = document.getElementById('autocomplete2');
       const options = { componentRestrictions: { country: 'ca' } };
       if (
         typeof window.google !== 'undefined' &&
@@ -47,6 +46,10 @@ class Instance extends Component {
       ) {
         const autocomplete = new window.google.maps.places.Autocomplete(
           input,
+          options
+        );
+        const autocomplete2 = new window.google.maps.places.Autocomplete(
+          input2,
           options
         );
 
@@ -82,11 +85,48 @@ class Instance extends Component {
             selectedSuggest.administrative_area_level_1
           }, ${selectedSuggest.postal_code}`;
           this.setState({
-            destination: input.value,
+            destinationAddress: input.value,
             geoCode: {
               lat: selectedPlace.geometry.location.lat(),
               lng: selectedPlace.geometry.location.lng()
             }
+          });
+        });
+
+        autocomplete2.addListener('place_changed', () => {
+          const selectedPlace = autocomplete2.getPlace();
+          const componentForm = {
+            street_number: 'short_name',
+            route: 'long_name',
+            locality: 'long_name',
+            administrative_area_level_1: 'short_name',
+            country: 'long_name',
+            postal_code: 'short_name'
+          };
+
+          // Get each component of the address from the place details
+          // and fill the corresponding field on the form.
+          let selectedSuggest = {};
+          for (let addressComponent of selectedPlace.address_components) {
+            let addressType = '';
+            for (let type of addressComponent.types) {
+              if (componentForm[type]) {
+                addressType = type;
+              }
+            }
+            if (componentForm[addressType]) {
+              selectedSuggest[addressType] =
+                addressComponent[componentForm[addressType]];
+            }
+          }
+          input2.value = `${selectedSuggest.street_number} ${
+            selectedSuggest.route
+          }, ${selectedSuggest.locality}, ${
+            selectedSuggest.administrative_area_level_1
+          }, ${selectedSuggest.postal_code}`;
+
+          this.setState({
+            startingAddress: input2.value
           });
         });
       } else {
@@ -97,7 +137,7 @@ class Instance extends Component {
 
   renderInput = field => (
     <TextField
-      id={field.label === 'Destination' ? 'autocomplete' : null}
+      id={field.id}
       multiLine={field.input.name === 'description' ? true : false}
       rows={field.input.name === 'description' ? 5 : 1}
       rowsMax={field.input.name === 'description' ? 5 : 1}
@@ -118,6 +158,7 @@ class Instance extends Component {
     const today = new Date();
     return (
       <DatePicker
+        id={field.id}
         className={field.className}
         hintText={field.label}
         hintStyle={styles.hintStyle}
@@ -136,6 +177,7 @@ class Instance extends Component {
   renderTimePicker = field => {
     return (
       <TimePicker
+        id={field.id}
         className={field.className}
         hintText={field.label}
         hintStyle={styles.hintStyle}
@@ -154,15 +196,39 @@ class Instance extends Component {
 
   onSubmit = values => {
     this.state.error ? null : this.setState({ error: '' });
-    if (!this.state.destination.includes(undefined)) {
-      values = {
-        ...values,
-        geoCode: this.state.geoCode,
-        destination: this.state.destination
-      };
-      console.log(values);
-
-      // this.props.history.push('/sessions');
+    if (!this.state.destinationAddress.includes(undefined)) {
+      let data = {};
+      this.props.match.params.type === 'driver'
+        ? (data = {
+            geoCode: this.state.geoCode,
+            time: values.time,
+            date: values.date,
+            capacity: values.capacity,
+            destinationAddress: this.state.destinationAddress,
+            carInfo: {
+              make: values.make.toUpperCase(),
+              model: values.model.toUpperCase(),
+              fuelEconomy: values.fuelEconomy,
+              licensePlate: values.licensePlate.toUpperCase().replace(/\s/g, '')
+            }
+          })
+        : (data = {
+            time: values.time,
+            date: values.date,
+            geoCode: this.state.geoCode,
+            destinationAddress: this.state.destinationAddress,
+            maxDistance: values.maxDistance
+          });
+      console.log(data);
+      this.props.match.params.type === 'driver'
+        ? axios
+            .post('https://rideshareserve.herokuapp.com/driver', data)
+            .then(response => console.log(response))
+            .catch(err => console.log(err))
+        : axios
+            .post('https://rideshareserve.herokuapp.com/driver/filter', data)
+            .then(response => console.log(response))
+            .catch(err => console.log(err));
     } else {
       this.setState({
         error: 'Please enter a correct address'
@@ -172,37 +238,106 @@ class Instance extends Component {
 
   render() {
     const { handleSubmit } = this.props;
-    const basicInfo = [
+    const passengerInstance = [
       {
+        id: '',
         className: 'Field DatePicker',
         label: 'Select Date',
         name: 'date',
         component: this.renderDatePicker
       },
       {
+        id: '',
         className: 'Field TimePicker',
         label: 'Select Time',
         name: 'time',
         component: this.renderTimePicker
       },
       {
+        id: 'autocomplete',
         className: 'Field',
         label: 'Destination',
-        name: 'destination',
+        name: 'destinationAddress',
+        component: this.renderInput
+      }
+    ];
+
+    const maxDistance = [
+      {
+        id: '',
+        className: 'Field',
+        label: 'Max Distance',
+        name: 'maxDistance',
+        type: 'number',
+        component: this.renderInput
+      }
+    ];
+
+    const driverInstance = [
+      {
+        id: 'autocomplete2',
+        className: 'Field',
+        label: 'Starting Address',
+        name: 'startingAddress',
+        component: this.renderInput
+      },
+      {
+        id: '',
+        className: 'Field',
+        label: 'Capacity',
+        name: 'capacity',
+        type: 'number',
+        component: this.renderInput
+      },
+      {
+        className: 'Field',
+        label: 'Car Brand',
+        name: 'make',
+        type: 'text',
+        component: this.renderInput
+      },
+      {
+        id: '',
+        className: 'Field',
+        label: 'Car Model',
+        name: 'model',
+        type: 'text',
+        component: this.renderInput
+      },
+      {
+        id: '',
+        className: 'Field',
+        label: 'Car Fuel Consumption',
+        name: 'fuelEconomy',
+        type: 'number',
+        component: this.renderInput
+      },
+      {
+        id: '',
+        className: 'Field',
+        label: 'Car License Plate',
+        name: 'licensePlate',
+        type: 'text',
         component: this.renderInput
       }
     ];
     return (
       <div className="Create-Instance-Container">
         <div className="Create-Instance-Box">
-          <h1> Driver Instance </h1>
+          <h1>
+            {' '}
+            {this.props.match.params.type === 'driver'
+              ? 'Driver Instance'
+              : 'Passenger Instance'}
+          </h1>
           <form
             className="Driver-Instance-Form"
             onSubmit={handleSubmit(this.onSubmit.bind(this))}
           >
-            {basicInfo.map((item, i) => (
+            {passengerInstance.map((item, i) => (
               <Field
                 key={i}
+                id={item.id}
                 className={item.className}
                 label={item.label}
                 name={item.name}
@@ -210,6 +345,29 @@ class Instance extends Component {
                 component={item.component}
               />
             ))}
+            {this.props.match.params.type === 'driver'
+              ? driverInstance.map((item, i) => (
+                  <Field
+                    key={i}
+                    id={item.id}
+                    className={item.className}
+                    label={item.label}
+                    name={item.name}
+                    type={item.type}
+                    component={item.component}
+                  />
+                ))
+              : maxDistance.map((item, i) => (
+                  <Field
+                    key={i}
+                    id={item.id}
+                    className={item.className}
+                    label={item.label}
+                    name={item.name}
+                    type={item.type}
+                    component={item.component}
+                  />
+                ))}
             <p> {this.state.error} </p>
             <button type="submit" className="Create-Instance-Submit">
               Create
@@ -229,8 +387,32 @@ function validate(values) {
   if (!values.time) {
     errors.time = 'Please choose a time';
   }
-  if (!values.destination) {
+  if (!values.destinationAddress) {
     errors.destination = 'Please enter an address';
+  }
+  if (!values.capacity) {
+    errors.capacity = 'Please enter the maximum capacity';
+  }
+  if (!values.make) {
+    errors.make = 'Please enter your car brand';
+  }
+  if (!values.model) {
+    errors.model = 'Please enter your car model';
+  }
+  if (!/^([0-9]*|\d*\.\d{1}?\d*)$/.test(values.fuelEconomy)) {
+    errors.fuelEconomy = 'Please enter a valid value ';
+  }
+  if (!values.fuelEconomy) {
+    errors.fuelEconomy = ' Please enter your car fuel consumption L/Km';
+  }
+  if (!values.licensePlate) {
+    errors.licensePlate = 'Please enter your car license plate ';
+  }
+  if (!/^([0-9]*|\d*\.\d{1}?\d*)$/.test(values.capacity)) {
+    errors.capacity = 'Please enter a valid value';
+  }
+  if (!/^[a-zA-Z0-9 ]+$/.test(values.licensePlate)) {
+    errors.licensePlate = 'Please enter a valid license plate number';
   }
   return errors;
 }

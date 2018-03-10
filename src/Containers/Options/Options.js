@@ -11,11 +11,11 @@ class Options extends Component {
   }
 
   continueAsPassenger() {
-    this.props.history.push('/passengerinstance');
+    this.props.history.push('/instance/passenger');
   }
 
   continueAsDriver() {
-    this.props.history.push('/driverinstance');
+    this.props.history.push('/instance/driver');
   }
 
   render() {

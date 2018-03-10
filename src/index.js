@@ -23,7 +23,7 @@ const Rideshare = () => {
             <Route path="/profile" component={Profile} />
             <Route path="/options" component={Options} />
             <Route exact path="/signin" component={SignIn} />
-            <Route path="/instance" component={Instance} />
+            <Route path="/instance/:type" component={Instance} />
           </Switch>
         </Provider>
       </MuiThemeProvider>
