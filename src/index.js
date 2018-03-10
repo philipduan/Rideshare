@@ -13,6 +13,8 @@ import SignIn from './Containers/Sign-In/SignIn';
 import Register from './Containers/Register/Register';
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import PassengerInstance from './Containers/PassengerInstance/PassengerInstance';
+import DriverInstance from './Containers/DriverInstance/DriverInstance';
 
 //biiiiii
 const Rideshare = () => {
@@ -26,6 +28,8 @@ const Rideshare = () => {
             <Route path="/options" component={Options} />
             <Route exact path="/signin" component={SignIn} />
             <Route exact path="/register" component={Register} />
+            <Route path="/passengerinstance" component={PassengerInstance} />
+            <Route path="/driverinstance" component={DriverInstance} />
           </Switch>
         </Provider>
       </MuiThemeProvider>
