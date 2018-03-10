@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { ProfileCard } from './ProfileCard';
 import { ProfileDriver } from './ProfileDriver';
-import { ProfilePassenger } from './Profile                                      Passenger';
+import { ProfilePassenger } from './ProfilePassenger';
+import axios from 'axios';
 import './style.css';
 
 export default class ProfileContainer extends Component {
@@ -13,15 +14,14 @@ export default class ProfileContainer extends Component {
   }
 
   componentWillMount() {
-    fetch('https://rideshareserve.herokuapp.com/user/', {
-      method: 'GET',
-      headers: new Headers({
-        'Content-Type': 'application/json'
-      })
-    }).then(data => {
-      let user = data.filter(user => user._id === this.props.match.params.id);
-      this.setState({ user });
-    });
+    // axios.get('https://rideshareserve.herokuapp.com/user/').then(data => {
+    //   if (data) {
+    //     console.log('data: ', data);
+    //     let user = data.find(user => user._id === this.props.match.params.id);
+    //     return this.setState({ user });
+    //   }
+    //   console.log('no data');
+    // });
   }
 
   render() {
