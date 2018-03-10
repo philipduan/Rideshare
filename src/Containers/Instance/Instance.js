@@ -228,12 +228,15 @@ class Instance extends Component {
             maxDistance: values.maxDistance
           });
       console.log(data);
-      this.props.match.params.type === 'driver'
-        ? axios
-            .post('https://rideshareserv.herokuapp.com/driver', data)
-            .then(response => console.log(response))
-            .catch(err => console.log(err))
-        : this.props.sendInstanceObject(data);
+      if (this.props.match.params.type === 'driver') {
+        axios
+          .post('https://rideshareserv.herokuapp.com/driver', data)
+          .then(response => console.log(response))
+          .catch(err => console.log(err));
+      } else {
+        sessionStorage.setItem('address', data.destinationAddress);
+        return this.props.history.push('/ridefeed');
+      }
     } else {
       this.setState({
         error: 'Please enter a correct address'

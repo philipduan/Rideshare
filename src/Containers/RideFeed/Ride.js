@@ -15,19 +15,19 @@ class Ride extends Component {
     };
 
     this.driver = {
-      name: 'Big Homie Quan', // driver.name
+      name: 'Max Page', // driver.name
       destination: '462 Wellington St W, Toronto, ON', // driver.destination
-      pickup: 'Markham Rd & Hwy 7', // driver.pickup
-      date: '2018-03-09',
-      time: '8:00',
+      startingaddress: '7 Joseph St, Markham, ON', // driver.pickup
+      date: '2018-03-10',
+      time: '18:00',
       vehicle: {
         make: 'Nissan',
         model: 'Altima',
         lper100: 8.2,
-        licenceplace: 'BGHOMIEQ',
-        capacity: 3
+        licenceplace: 'BZDZ787',
+        capacity: 4
       },
-      passengers: ['User']
+      passengers: ['']
     };
 
     this.getRideCost = this.getRideCost.bind(this);
@@ -96,7 +96,7 @@ class Ride extends Component {
           </p>
           <p className="Ride-Destination">
             {' '}
-            <span>Pickup: </span> {this.driver.pickup}{' '}
+            <span>Starting Address: </span> {this.driver.startingaddress}{' '}
           </p>
           <p className="Ride-Destination">
             {' '}
@@ -116,7 +116,7 @@ class Ride extends Component {
         <div className="Ride-Costs">
           <p> Your estimated trip cost: ${this.state.costPerPassenger} </p>
         </div>
-        <button onClick={this.handleRSVP} className="RSVP-button">
+        <button onClick={this.props.handleChange} className="RSVP-button">
           {' '}
           Request Ride{' '}
         </button>
