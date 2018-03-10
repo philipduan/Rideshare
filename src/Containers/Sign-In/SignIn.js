@@ -96,21 +96,32 @@ class Login extends Component {
 
                 <RaisedButton
                   fullWidth
+                  labelColor="#FFFFFF"
+                  labelStyle={{
+                    fontFamily: 'Open Sans Condensed sans-serif',
+                    textTransform: 'capitalize'
+                  }}
+                  label="Create Account"
                   primary
+                  style={{ color: '#FFFFFF' }}
                   className="enterButton"
                   onClick={() => this.props.history.push(`/register`)}
-                >
-                  Create Account
-                </RaisedButton>
+                />
+                {/* Create Account
+                </RaisedButton> */}
                 <RaisedButton
                   className="enterButton"
                   primary
+                  labelColor="#FFFFFF"
+                  labelStyle={{
+                    fontFamily: 'Open Sans Condensed sans-serif',
+                    textTransform: 'capitalize'
+                  }}
+                  label="Sign In"
                   disabled={this.state.advance}
                   fullWidth
                   type="submit"
-                >
-                  Sign In
-                </RaisedButton>
+                />
               </form>
             </div>
           </Paper>
