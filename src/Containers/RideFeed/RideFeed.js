@@ -15,9 +15,14 @@ class RideFeed extends Component {
         <h1> Ride Feed </h1>
         <Ride />
         <Ride />
-        {/* {this.rides.map(ride => {
-          return <Ride key={rides.id} ride={ride} />;
+        <Ride />
+        <Ride />
+        <Ride />
+
+        {/* {this.drivers.map(ride => {
+          return <Ride ride={ride} />;
         })} */}
+        <button className="Passenger-Profile-Button"> My Profile </button>
       </div>
     );
   }

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import firebase from '../Sign-In/firebase';
 import './Ride.css';
+import { withRouter } from 'react-router';
 import axios from 'axios';
 
 class Ride extends Component {
@@ -26,7 +27,7 @@ class Ride extends Component {
         licenceplace: 'BGHOMIEQ',
         capacity: 3
       },
-      passengers: ['User', 'User2']
+      passengers: ['User']
     };
 
     this.getRideCost = this.getRideCost.bind(this);
@@ -68,6 +69,7 @@ class Ride extends Component {
       .catch(err => {
         console.log(err);
       });
+    this.props.history.push('/profile');
   }
 
   getRideCost() {
@@ -91,8 +93,10 @@ class Ride extends Component {
           <p className="Ride-Destination">
             {' '}
             <span>Destination: </span> {this.driver.destination}{' '}
-            <span> Pickup: </span>
-            {this.driver.pickup}
+          </p>
+          <p className="Ride-Destination">
+            {' '}
+            <span>Pickup: </span> {this.driver.pickup}{' '}
           </p>
           <p className="Ride-Destination">
             {' '}
@@ -121,4 +125,5 @@ class Ride extends Component {
   }
 }
 
+Ride = withRouter(Ride);
 export default Ride;
