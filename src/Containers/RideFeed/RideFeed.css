@@ -1,0 +1,15 @@
+.Ride-Feed-Container {
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  background-color: #000000;
+}
+
+.Ride-Feed-Container h1 {
+  color: white;
+  margin: 10% 0%;
+  font-family: 'Open Sans Condensed', sans-serif;
+  font-size: 30px;
+  text-transform: capitalize;
+}

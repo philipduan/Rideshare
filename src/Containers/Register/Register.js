@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import firebase from '../Sign-In/firebase';
 import RaisedButton from 'material-ui/RaisedButton';
 import Paper from 'material-ui/Paper';
-import ValidatedTextField from '../../components/ValidatedTextField';
+import ValidatedTextField from '../../Components/ValidatedTextField';
+import { withRouter } from 'react-router-dom';
+
 import './styles.css';
 
 class Create extends Component {
@@ -11,11 +13,19 @@ class Create extends Component {
     this.state = {
       email: '',
       password: '',
-      bio: '',
-      fullname: '',
+      userAddress: '',
+      name: '',
+      company: '',
       advance: true
     };
   }
+  // componentDidUpdate() {
+  //   this.check();
+  // }
+  validateEmail = email => {
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email));
+  };
 
   componentWillMount() {
     // firebase
@@ -36,40 +46,47 @@ class Create extends Component {
   };
 
   handleNameChange = event => {
-    this.setState({ fullname: event.target.value });
+    this.setState({ name: event.target.value });
     this.check();
   };
 
-  handleBioChange = event => {
-    this.setState({ bio: event.target.value });
+  handleCompanyChange = event => {
+    this.setState({ company: event.target.value });
+    this.check();
+  };
+  handleAddressChange = event => {
+    this.setState({ userAddress: event.target.value });
     this.check();
   };
 
   check = () => {
     if (
-      this.state.bio &&
-      this.state.fullname &&
+      this.state.company &&
+      this.state.name &&
       this.state.password &&
-      this.state.email
+      this.state.userAddress &&
+      this.state.email &&
+      this.validateEmail(this.state.email) === true
     ) {
       this.setState({ advance: false });
     } else {
-      null;
+      this.setState({ advance: true });
     }
   };
 
   create = event => {
     event.preventDefault();
     const user = {
-      fullname: this.state.fullname,
+      name: this.state.name,
       email: this.state.email,
-      bio: this.state.bio
+      company: this.state.company,
+      userAddress: this.state.userAddress
     };
     firebase
       .auth()
       .createUserWithEmailAndPassword(this.state.email, this.state.password)
       .then(data => {
-        fetch('https://boomtown-server.herokuapp.com/users/', {
+        fetch('https://rideshareserve.herokuapp.com/user/', {
           method: 'POST',
 
           body: JSON.stringify(user),
@@ -78,8 +95,9 @@ class Create extends Component {
           })
         });
       })
-      .then(() => {
-        this.props.history.push('/items');
+      .then(data => {
+        console.log(data);
+        this.props.history.push('/options');
       })
       .catch(err => {
         console.log('err', err);
@@ -89,15 +107,6 @@ class Create extends Component {
   render() {
     return (
       <div className="page login">
-        <div className="logo">
-          <img src={logo} alt="Boomtown Logo" />
-        </div>
-        <div className="topRight">
-          <img src={topRight} alt="Sky" />
-        </div>
-        <div className="bottomLeft">
-          <img src={bottomLeft} alt="City" />
-        </div>
         <div className="cardContainer">
           <Paper zDepth={5}>
             <div className="formContainer">
@@ -125,9 +134,16 @@ class Create extends Component {
                 </div>
                 <div>
                   <ValidatedTextField
-                    change={this.handleBioChange}
+                    change={this.handleCompanyChange}
                     type="textarea"
-                    label="About You"
+                    label="Place Of Work"
+                  />
+                </div>
+                <div>
+                  <ValidatedTextField
+                    change={this.handleAddressChange}
+                    type="text"
+                    label="Address"
                   />
                 </div>
                 <RaisedButton

@@ -5,6 +5,7 @@ import './styles.css';
 import ValidatedTextField from '../../Components/ValidatedTextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import Paper from 'material-ui/Paper';
+import axios from 'axios';
 
 class Login extends Component {
   constructor() {
@@ -12,7 +13,8 @@ class Login extends Component {
     this.state = {
       email: '',
       password: '',
-      advance: true
+      advance: true,
+      userObj: []
     };
   }
   componentWillMount() {
@@ -32,6 +34,14 @@ class Login extends Component {
     this.setState({ password: event.target.value });
     this.check();
   };
+  getUser = user => {
+    axios.get('https://rideshareserve.herokuapp.com/user/').then(data => {
+      console.log('data: ', data);
+      let userObj = data.data.filter(data => data.email === user.email);
+      console.log('user obj', userObj[0]._id);
+      sessionStorage.setItem('userId', userObj[0]._id);
+    });
+  };
 
   login = event => {
     event.preventDefault();
@@ -39,10 +49,11 @@ class Login extends Component {
       .auth()
       .signInWithEmailAndPassword(this.state.email, this.state.password)
       .then(user => {
-        console.log('you have signed bak in');
+        this.getUser(user);
+        console.log(user, 'you have signed bak in');
       })
       .then(() => {
-        this.props.history.push('/choose');
+        this.props.history.push('/options');
       })
       .catch(err => {
         console.log('there is an err', err);
@@ -59,8 +70,8 @@ class Login extends Component {
   render() {
     return (
       <div className="page login">
-        <div className="logo" />
         <div className="cardContainer">
+          <div className="logo" />
           <Paper zDepth={5}>
             <div className="formContainer">
               <form onSubmit={this.login} autoComplete="off">
@@ -85,7 +96,7 @@ class Login extends Component {
                   fullWidth
                   primary
                   className="enterButton"
-                  onClick={() => this.props.history.push(`/create`)}
+                  onClick={() => this.props.history.push(`/register`)}
                 >
                   Create Account
                 </RaisedButton>
