@@ -1,6 +1,6 @@
 .Ride-Feed-Container {
   display: flex;
-  height: auto;
+  height: 100vh;
   flex-direction: column;
   align-items: center;
   background-color: black;

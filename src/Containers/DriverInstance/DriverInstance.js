@@ -171,7 +171,7 @@ class DriverInstance extends Component {
       //   }`
       // );
       delete values.location;
-      this.props.history.push('/profile/driver');
+      this.props.history.push('/profile');
     } else {
       this.setState({
         error: 'Please enter a complete address'
