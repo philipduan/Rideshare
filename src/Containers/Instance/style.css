@@ -1,0 +1,51 @@
+body {
+  background-color: black;
+}
+.Create-Instance-Container {
+  height: 100%;
+  width: 100vw;
+  background-color: black;
+}
+
+.Create-Instance-Container .Create-Instance-Box {
+  width: 80vw;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.Create-Instance-Container .Create-Instance-Box h1 {
+  color: white;
+  padding: 10% 0;
+  font-family: 'Open Sans Condensed', sans-serif;
+  font-size: 30px;
+  text-transform: capitalize;
+  text-align: center;
+}
+
+.Create-Instance-Container .Create-Instance-Box .Create-Instance-Form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.Create-Instance-Container
+  .Create-Instance-Box
+  .Create-Instance-Form
+  .DatePicker,
+.Create-Instance-Form div {
+  width: 100%;
+}
+
+.Create-Instance-Container
+  .Create-Instance-Box
+  .Create-Instance-Form
+  .Create-Instance-Submit {
+  background-color: #36648b;
+  font-family: 'Open Sans Condensed', sans-serif;
+  font-size: 18px;
+  color: white;
+  padding: 10px 20px;
+  margin-top: 5%;
+  width: 60vw;
+}
