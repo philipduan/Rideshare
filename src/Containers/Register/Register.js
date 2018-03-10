@@ -97,7 +97,7 @@ class Create extends Component {
       })
       .then(data => {
         console.log(data);
-        this.props.history.push('/items');
+        this.props.history.push('/options');
       })
       .catch(err => {
         console.log('err', err);

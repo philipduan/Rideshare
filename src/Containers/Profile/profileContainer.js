@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { ProfileCard } from './ProfileCard';
 import { ProfileDriver } from './ProfileDriver';
-import { ProfilePassenger } from './Profile                                      Passenger';
+import { ProfilePassenger } from './ProfilePassenger';
 import './style.css';
 
 export default class ProfileContainer extends Component {

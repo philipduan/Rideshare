@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import firebase from '../Sign-In/firebase';
 import './Ride.css';
+import axios from 'axios';
 
 class Ride extends Component {
   constructor() {
@@ -8,7 +9,7 @@ class Ride extends Component {
 
     this.state = {
       costPerPassenger: 0,
-      rsvp: '',
+      occupants: '',
       user: []
     };
 
@@ -34,62 +35,39 @@ class Ride extends Component {
   componentWillMount() {
     firebase.auth().onAuthStateChanged(user => {
       this.setState({ user });
+      console.log(this.state.user.id);
     });
-  }
-  componentDidMount() {
-    fetch('https://rideshareserve.herokuapp.com/driver', {
-      method: 'GET',
-      headers: new Headers({
-        'Content-Type': 'application/json '
-      })
-    })
+    axios
+      .get('https://rideshareserve.herokuapp.com/driver')
       .then(driver => {
-        return driver.json();
-      })
-      .then(driver => {
-        return {
-          id: driver.id,
-          name: driver.name,
-          destination: driver.destination,
-          pickup: driver.pickup,
-          date: driver.date,
-          time: driver.time,
-          vehicle: {
-            make: driver.vehicle.make,
-            model: driver.vehicle.model,
-            lper100: driver.vehicle.lper100,
-            licenceplace: driver.vehicle.licenceplace,
-            capacity: driver.vehicle.capacity
-          },
-          passengers: driver.passengers
-        };
+        console.log(driver);
       })
       .catch(err => {
-        return err;
+        console.log(err);
       });
+  }
+  componentDidMount() {
     this.getRideCost();
   }
 
   handleRSVP() {
     this.setState({
-      rsvp: this.state.user
+      ocupants: this.state.user
     });
     //send request to driver --- updates on driver end
-    fetch('https://rideshareserve.herokuapp.com/driver', {
-      method: 'POST',
-      headers: new Headers({
-        'Content-Type': 'application/json '
-      }),
-      body: JSON.stringify({
-        rsvp: this.state.user
+    axios
+      .patch(
+        'https://rideshareserve.herokuapp.com/driver/occupants/${driverId}',
+        {
+          occupants: this.state.occupants
+        }
+      )
+      .then(response => {
+        return response;
       })
-        .then(response => {
-          console.log(response);
-        })
-        .catch(err => {
-          console.log(err);
-        })
-    });
+      .catch(err => {
+        console.log(err);
+      });
   }
 
   getRideCost() {
