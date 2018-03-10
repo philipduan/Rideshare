@@ -61,6 +61,8 @@ class Login extends Component {
       <div className="page login">
         <div className="cardContainer">
           <div className="logo" />
+          <h3 id="RideShare-logo"> RideShare </h3>
+          <p id="RideShare-slogan"> Let's save the planet </p>
           <Paper zDepth={5}>
             <div className="formContainer">
               <form onSubmit={this.login} autoComplete="off">

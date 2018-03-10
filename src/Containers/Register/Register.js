@@ -107,6 +107,8 @@ class Create extends Component {
   render() {
     return (
       <div className="page login">
+        <h3> RideShare </h3>
+        <p> Let's save the planet </p>
         <div className="cardContainer">
           <Paper zDepth={5}>
             <div className="formContainer">
