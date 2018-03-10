@@ -3,7 +3,6 @@ import TextField from 'material-ui/TextField';
 import DatePicker from 'material-ui/DatePicker';
 import TimePicker from 'material-ui/TimePicker';
 import { Field, reduxForm } from 'redux-form';
-import { image, helpers } from 'faker';
 import moment from 'moment';
 import { withRouter } from 'react-router-dom';
 import _ from 'lodash';
@@ -23,15 +22,18 @@ const styles = {
   }
 };
 
-class DriverInstance extends Component {
+class Instance extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      address: '',
-      addressForm: {},
+      destination: '', //1 line full address i.e 462, Wellington St W, Toronto, ON, M5V 1E3
       error: '',
       geoCode: {}
+      //geocode : {
+      // lat: -43.04938492,
+      // lng: 73.3492837
+      //}
     };
   }
 
@@ -74,15 +76,13 @@ class DriverInstance extends Component {
                 addressComponent[componentForm[addressType]];
             }
           }
-
           input.value = `${selectedSuggest.street_number} ${
             selectedSuggest.route
           }, ${selectedSuggest.locality}, ${
             selectedSuggest.administrative_area_level_1
           }, ${selectedSuggest.postal_code}`;
           this.setState({
-            address: input.value,
-            addressForm: selectedSuggest,
+            destination: input.value,
             geoCode: {
               lat: selectedPlace.geometry.location.lat(),
               lng: selectedPlace.geometry.location.lng()
@@ -97,7 +97,7 @@ class DriverInstance extends Component {
 
   renderInput = field => (
     <TextField
-      id={field.label === 'Location' ? 'autocomplete' : null}
+      id={field.label === 'Destination' ? 'autocomplete' : null}
       multiLine={field.input.name === 'description' ? true : false}
       rows={field.input.name === 'description' ? 5 : 1}
       rowsMax={field.input.name === 'description' ? 5 : 1}
@@ -119,7 +119,7 @@ class DriverInstance extends Component {
     return (
       <DatePicker
         className={field.className}
-        hintText="Select Date"
+        hintText={field.label}
         hintStyle={styles.hintStyle}
         style={styles.general}
         underlineShow={false}
@@ -137,14 +137,15 @@ class DriverInstance extends Component {
     return (
       <TimePicker
         className={field.className}
-        hintText="Select Time"
+        hintText={field.label}
         hintStyle={styles.hintStyle}
+        format="24hr"
         style={styles.general}
         minutesStep={5}
         underlineShow={false}
         errorText={field.meta.touched && field.meta.error}
         onChange={(event, time) =>
-          field.input.onChange(moment(time).format('hh:mm A'))
+          field.input.onChange(moment(time).format('hh:mm'))
         }
         fullWidth={true}
       />
@@ -153,35 +154,18 @@ class DriverInstance extends Component {
 
   onSubmit = values => {
     this.state.error ? null : this.setState({ error: '' });
-    if (!this.state.address.includes(undefined)) {
+    if (!this.state.destination.includes(undefined)) {
       values = {
         ...values,
-        title: values.title
-          .toLowerCase()
-          .replace(/\b\w/g, l => l.toUpperCase()),
-        courseCode: values.courseCode.replace(/\s/g, '').toUpperCase(),
-        description: values.description
-          ? values.description
-          : 'No Description Provided',
         geoCode: this.state.geoCode,
-        address: this.state.address,
-        addressForm: this.state.addressForm,
-        attending: [this.props.currentUserId],
-        pending: [],
-        institution: this.props.currentUser.profile.institution,
-        sessionCreator: this.props.currentUser
+        destination: this.state.destination
       };
-      // console.log(
-      //   'exact address',
-      //   `https://maps.google.com/maps?q=${values.geoCode.lat},${
-      //     values.geoCode.lng
-      //   }`
-      // );
-      delete values.location;
-      this.props.history.push('/sessions');
+      console.log(values);
+
+      // this.props.history.push('/sessions');
     } else {
       this.setState({
-        error: 'Please enter a complete address'
+        error: 'Please enter a correct address'
       });
     }
   };
@@ -190,55 +174,27 @@ class DriverInstance extends Component {
     const { handleSubmit } = this.props;
     const basicInfo = [
       {
-        className: 'Field',
-        label: 'Session Title',
-        name: 'title',
-        type: 'text',
-        component: this.renderInput
-      },
-      {
-        className: 'Field',
-        label: 'Course Code',
-        name: 'courseCode',
-        type: 'text',
-        component: this.renderInput
-      },
-      {
-        className: 'Field',
-        label: 'Session Capacity',
-        name: 'capacity',
-        type: 'number',
-        component: this.renderInput
-      },
-      {
         className: 'Field DatePicker',
-        label: '',
+        label: 'Select Date',
         name: 'date',
         component: this.renderDatePicker
       },
       {
         className: 'Field TimePicker',
-        label: '',
+        label: 'Select Time',
         name: 'time',
         component: this.renderTimePicker
       },
       {
         className: 'Field',
-        label: 'Location',
-        name: 'location',
-        component: this.renderInput
-      },
-      {
-        className: 'Field Description',
-        label: 'Session Description...',
-        name: 'description',
-        type: 'text',
+        label: 'Destination',
+        name: 'destination',
         component: this.renderInput
       }
     ];
     return (
-      <div className="Create-Session-Container">
-        <div className="Create-Session-Box">
+      <div className="Create-Instance-Container">
+        <div className="Create-Instance-Box">
           <h1> Driver Instance </h1>
           <form
             className="Driver-Instance-Form"
@@ -255,7 +211,7 @@ class DriverInstance extends Component {
               />
             ))}
             <p> {this.state.error} </p>
-            <button type="submit" className="Create-Session-Submit">
+            <button type="submit" className="Create-Instance-Submit">
               Create
             </button>
           </form>
@@ -267,29 +223,19 @@ class DriverInstance extends Component {
 
 function validate(values) {
   const errors = {};
-  if (!values.title) {
-    errors.title = 'Please enter a title';
-  }
-  if (!values.courseCode) {
-    errors.courseCode = 'Please enter a course code';
-  }
-  if (!values.capacity) {
-    errors.capacity = 'Please enter a number';
-  }
   if (!values.date) {
     errors.date = 'Please choose a date';
   }
   if (!values.time) {
     errors.time = 'Please choose a time';
   }
-  if (!values.location) {
-    errors.location = 'Please enter an address';
+  if (!values.destination) {
+    errors.destination = 'Please enter an address';
   }
   return errors;
 }
 
-DriverInstance = withRouter(DriverInstance);
 export default reduxForm({
   validate: validate,
-  form: 'driverinstance'
-})(DriverInstance);
+  form: 'instance'
+})(withRouter(Instance));
